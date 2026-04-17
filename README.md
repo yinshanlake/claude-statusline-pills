@@ -28,11 +28,21 @@ Each segment has its own background color (deep violet / steel blue / amber / ma
 
 ## Install
 
-**Same one-liner works on macOS, Linux, and Windows (Git Bash / WSL):**
+### One-liner
+
+**macOS / Linux / Windows (Git Bash / WSL)** — bash:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yinshanlake/claude-statusline-pills/main/install.sh | bash
 ```
+
+**Windows (PowerShell)** — also works on macOS/Linux if you have PowerShell 7:
+
+```powershell
+irm https://raw.githubusercontent.com/yinshanlake/claude-statusline-pills/main/install.ps1 | iex
+```
+
+> The PowerShell installer writes the same `~/.claude/statusline-command.sh` and patches `~/.claude/settings.json` natively — no `jq` dependency for the install step itself. The statusline script at runtime still needs `bash`, `jq`, and `awk` on PATH (all shipped with Git for Windows).
 
 ### Prerequisites
 
@@ -52,6 +62,14 @@ The installer checks for `bash`, `jq`, `awk`, `curl` and shows the right install
 git clone https://github.com/yinshanlake/claude-statusline-pills.git
 cd claude-statusline-pills
 bash install.sh
+```
+
+Or with PowerShell:
+
+```powershell
+git clone https://github.com/yinshanlake/claude-statusline-pills.git
+cd claude-statusline-pills
+powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
 ### What the installer does

@@ -12,14 +12,51 @@ SETTINGS="$CLAUDE_DIR/settings.json"
 SCRIPT_DEST="$CLAUDE_DIR/statusline-command.sh"
 REPO_RAW="https://raw.githubusercontent.com/yinshanlake/claude-statusline-pills/main"
 
-# ── 1. Dependency check ──────────────────────────────────────────
+# ── 1. Detect OS for platform-appropriate guidance ───────────────
+case "$(uname -s 2>/dev/null)" in
+  Darwin)                    OS="mac"     ;;
+  Linux)                     OS="linux"   ;;
+  MINGW*|MSYS*|CYGWIN*)      OS="windows" ;;
+  *)                         OS="unknown" ;;
+esac
+
+# ── 2. Dependency check ──────────────────────────────────────────
 missing=()
-for cmd in bash jq awk; do
+for cmd in bash jq awk curl; do
   command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
 done
 if [ ${#missing[@]} -gt 0 ]; then
   echo "ERROR: missing required tools: ${missing[*]}"
-  echo "Install them before continuing. On Windows use Git Bash + 'winget install jqlang.jq'"
+  echo ""
+  echo "Install the missing tools and re-run this script:"
+  case "$OS" in
+    mac)
+      echo "  brew install ${missing[*]}"
+      ;;
+    linux)
+      if command -v apt-get >/dev/null 2>&1; then
+        echo "  sudo apt-get install -y ${missing[*]}"
+      elif command -v dnf >/dev/null 2>&1; then
+        echo "  sudo dnf install -y ${missing[*]}"
+      elif command -v pacman >/dev/null 2>&1; then
+        echo "  sudo pacman -S ${missing[*]}"
+      else
+        echo "  (use your distro's package manager to install: ${missing[*]})"
+      fi
+      ;;
+    windows)
+      echo "  # In Git Bash / PowerShell:"
+      for m in "${missing[@]}"; do
+        case "$m" in
+          jq)  echo "  winget install jqlang.jq" ;;
+          *)   echo "  # ensure $m is in PATH (usually via Git for Windows)" ;;
+        esac
+      done
+      ;;
+    *)
+      echo "  (use your system's package manager to install: ${missing[*]})"
+      ;;
+  esac
   exit 1
 fi
 

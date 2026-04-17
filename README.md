@@ -28,24 +28,42 @@ Each segment has its own background color (deep violet / steel blue / amber / ma
 
 ## Install
 
-### One-liner
+**Same one-liner works on macOS, Linux, and Windows (Git Bash / WSL):**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yinshanlake/claude-statusline-pills/main/install.sh | bash
 ```
 
-### Manual
+### Prerequisites
+
+The installer checks for `bash`, `jq`, `awk`, `curl` and shows the right install command for your OS if any is missing. Quick reference:
+
+| Platform | Install prerequisites |
+|----------|----------------------|
+| **macOS** | `brew install jq` (bash/awk/curl come pre-installed) |
+| **Linux (Debian/Ubuntu)** | `sudo apt-get install -y jq` |
+| **Linux (Fedora/RHEL)** | `sudo dnf install -y jq` |
+| **Linux (Arch)** | `sudo pacman -S jq` |
+| **Windows** | Install [Git for Windows](https://git-scm.com/download/win), then `winget install jqlang.jq` |
+
+### Manual install
+
 ```bash
 git clone https://github.com/yinshanlake/claude-statusline-pills.git
 cd claude-statusline-pills
 bash install.sh
 ```
 
-The installer:
-1. Copies `statusline-command.sh` to `~/.claude/statusline-command.sh`
-2. Patches `~/.claude/settings.json` to wire up the `statusLine` hook (existing settings preserved; a timestamped backup is saved)
-3. Verifies dependencies (`bash`, `jq`, `awk`)
+### What the installer does
 
-Open a new Claude Code session to see it take effect.
+1. Detects your OS (macOS / Linux / Windows) and verifies dependencies
+2. Copies `statusline-command.sh` to `~/.claude/statusline-command.sh`
+3. Patches `~/.claude/settings.json` to wire up the `statusLine` hook
+   - Existing settings are preserved via `jq` deep-merge
+   - A timestamped backup is saved as `settings.json.bak.<timestamp>`
+4. Prints next-step instructions
+
+Open a new Claude Code session to see it take effect (or send any message in an existing session to trigger a refresh).
 
 ## What it shows
 
